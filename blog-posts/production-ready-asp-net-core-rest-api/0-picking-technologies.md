@@ -51,6 +51,8 @@ From a technical standpoint it should also have the following:
 - Unit tests
 - Cross platform compatible
 - Standardized API documentation
+- Source Code Repository
+- Build System
 
 ---
 
@@ -68,6 +70,8 @@ With all of these requirements layed out it is time to dig into what technologie
 - NUnit for unit tests
 - OpenAPI 3.0 for API documentation
 - Existing user table in sql database for Authorization and Authentication
+- GitHub for source control
+- CircleCI for a build system
 
 ---
 
@@ -172,9 +176,34 @@ Here is the github for this library:
 
 #### Existing user table
 
-This is the one part of this project that will be very different from what most examples show. In most cases examples online will make use of either ASP.NET's Identity system or an online auth system like Auth0 or Google. The problem with that approach is that many production systems already have user logins stored in a database somewhere.
+This is the one part of this project that will be very different from what most examples show. In most examples online, they will make use of either ASP.NET's Identity system or an online auth system like Auth0. The problem with that approach is that many production systems already have user logins stored in a database somewhere. There is a lot of momentum built up in the existing auth infrastructure and it is very hard to swap everything all at once. A good first step will be to use the existing table and enhance its existing security.
 
-So for this series I will be using a user table stored in an existing database that is currently driving website logins and desktop application logins.
+So for this series I will be using a user table stored in an existing database that is currently driving website logins and desktop application logins. The layout of the table is as follows
+
+    UserId
+    Username
+    Role
+    Password
+    CreateDate
+    CreateUser
+    UpdateDate
+    UpdateUser
+
+Password in this case is a low quality hash such as MD5 with a single pass and no salt. This scenarios will allow me to show you how to deal with this issue without impacting the end user.
+
+#### GitHub
+
+By far the most populare online Git hosting service today. GitHub is an obvious choice for us to use and I would expect it is an obvious choice for actual private production code as well. It has very strong integrations with third parties and a very powerful Windows Desktop application which I will be using.
+
+#### CircleCI
+
+CircleCI is a hosted CI (Continuous Integration) service used to build and test software projects. It helps automate tasks during the development of your projects.
+
+CircleCI pricing allows for private repos to be free as long as only 3 users are logging into Circle, only one job is running at a time, you only need linux and you are limited to 2500 credits/week. Credits are used at a rate of 10/minute at the free tier so the above would give you a little over 4 hours of continuous builds per week.
+
+CircleCI is controlled by a yaml file that is placed in the root of your repository. Here are the docs on [writing yaml](https://circleci.com/docs/2.0/writing-yaml/).
+
+CircleCI was selected because of the pricing allowing private reposoitories, its support for yaml configuration living in the repository and for their ability to build dotnet core applications.
 
 ---
 
